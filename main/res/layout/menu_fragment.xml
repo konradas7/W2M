@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/padding"
+    android:paddingTop="@dimen/padding"
+    android:paddingRight="@dimen/padding"
+    android:paddingBottom="@dimen/padding">
+
+    <Button
+        android:id="@+id/profile_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Profilis" />
+
+    <Button
+        android:id="@+id/friend_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Draugai" />
+
+    <Button
+        android:id="@+id/group_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Grupė" />
+
+    <Button
+        android:id="@+id/pref_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Filtras" />
+
+    <Button
+        android:id="@+id/help_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pagalba" />
+</LinearLayout>
