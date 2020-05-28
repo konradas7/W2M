@@ -42,7 +42,7 @@ public class MapPresenter {
         LatLng referencePoint= new LatLng(medianLoc.getX(), medianLoc.getY());
         RectangularBounds bounds= RectangularBounds.newInstance(new LatLngBounds(new LatLng(referencePoint.latitude - 0.009, referencePoint.longitude - 0.009), new LatLng(referencePoint.latitude + 0.009, referencePoint.longitude+ 0.009)));
         //TODO: išimti api key iš čia ir įdėti į env variables
-        Places.initialize(View.getActivityContext(), "AIzaSyBKLZ-oBn0b1vW_m9qdxL0AnFhWOe_T1p0");
+        Places.initialize(View.getActivityContext(), "API_KEY_REDACTED");
         PlacesClient placesClient= Places.createClient(View.getActivityContext());
 
         if (filter.isBarPref()) {
