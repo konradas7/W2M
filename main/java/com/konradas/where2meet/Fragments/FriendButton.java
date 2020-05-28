@@ -47,10 +47,6 @@ public class FriendButton extends Fragment{
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.custom_button, container, false);
-        ImageView img= view.findViewById(R.id.profile_image);
-        if (picture != null) {
-            img.setImageBitmap(picture);
-        }
         TextView txt= view.findViewById(R.id.profile_name_text);
         txt.setText(name);
 

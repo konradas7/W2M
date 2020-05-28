@@ -1,12 +1,8 @@
 package com.konradas.where2meet.Fragments.Presenters;
 
 import com.konradas.where2meet.Fragments.Views.AddFriendDialogView;
-import com.konradas.where2meet.obj.User;
 import com.konradas.where2meet.tools.DataInterface;
-import com.konradas.where2meet.tools.HTTPInterpreter;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class AddFriendDialogPresenter {
 

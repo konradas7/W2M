@@ -109,4 +109,8 @@ public class HTTPInterpreter {
     public void getCurrentGroupMedianLocation() {
         //TODO: nusiusti i serveri requesta, kuris grazi aktyvios grupes vidurio taska
     }
+
+    public void voteForPlace(String id) {
+        //TODO: nusiųsti į serverį, kad pabalsavom už kažkokią vietą
+    }
 }

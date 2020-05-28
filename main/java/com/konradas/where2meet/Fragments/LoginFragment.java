@@ -18,12 +18,16 @@ import android.widget.EditText;
 
 import com.konradas.where2meet.Fragments.Presenters.LoginPresenter;
 import com.konradas.where2meet.Fragments.Views.LoginView;
+import com.konradas.where2meet.LoginActivity;
 import com.konradas.where2meet.MainActivity;
 import com.konradas.where2meet.R;
+import com.konradas.where2meet.tools.LoginDataInterface;
 
 public class LoginFragment extends Fragment implements LoginView {
 
+    private LoginDataInterface ldi;
     private LoginPresenter presenter = new LoginPresenter();
+
     public static LoginFragment newInstance() {
         return new LoginFragment();
     }
@@ -31,7 +35,7 @@ public class LoginFragment extends Fragment implements LoginView {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view= inflater.inflate(R.layout.login_fragment, container, false);
+        View view = inflater.inflate(R.layout.login_fragment, container, false);
         presenter.attach(this);
         Button loginBtn = view.findViewById(R.id.login_btn);
         Button regBtn = view.findViewById(R.id.register_btn);
@@ -43,7 +47,7 @@ public class LoginFragment extends Fragment implements LoginView {
             public void onClick(View v) {
                 Log.d("BUG1", "Login button clicked");
                 String pw = pwF.getText().toString();
-                String usr= usrF.getText().toString();
+                String usr = usrF.getText().toString();
                 presenter.tryAuth(usr, pw);
             }
         });
@@ -51,7 +55,8 @@ public class LoginFragment extends Fragment implements LoginView {
         regBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.callRegFrag();
+                ldi.callRegFrag();
+                killThisFragment();
             }
         });
 
@@ -64,10 +69,9 @@ public class LoginFragment extends Fragment implements LoginView {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         if (getActivity() != null) {
-            FragmentManager fragmentManager= getFragmentManager();
+            FragmentManager fragmentManager = getFragmentManager();
             if (fragmentManager != null) {
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                Log.d("BUG1", "Destroy fragment called");
                 fragmentTransaction.remove(this).commit();
             }
             getActivity().finish();
@@ -91,6 +95,15 @@ public class LoginFragment extends Fragment implements LoginView {
     }
 
 
+    public void setDataInterface(LoginDataInterface ldi) {
+        this.ldi = ldi;
+    }
 
+    private void killThisFragment() {
+        FragmentManager fragmentManager= getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        Log.d("BUG1", "Destroy fragment called");
+        fragmentTransaction.remove(this).commit();
 
+    }
 }

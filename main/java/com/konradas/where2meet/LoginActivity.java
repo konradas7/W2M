@@ -13,8 +13,9 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.konradas.where2meet.Fragments.LoginFragment;
 import com.konradas.where2meet.Fragments.RegisterFragment;
+import com.konradas.where2meet.tools.LoginDataInterface;
 
-public class LoginActivity extends FragmentActivity{
+public class LoginActivity extends FragmentActivity implements LoginDataInterface {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,16 +36,22 @@ public class LoginActivity extends FragmentActivity{
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             LoginFragment loginFragment = new LoginFragment();
             fragmentTransaction.add(R.id.fragment_holder, loginFragment).commit();
+            loginFragment.setDataInterface(this);
         }
 
     }
 
     void inflateRegFragment() {
-
          FragmentManager fragmentManager= getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             RegisterFragment registerFragment = new RegisterFragment();
             fragmentTransaction.add(R.id.fragment_holder, registerFragment).commit();
 
+    }
+
+    @Override
+    public void callRegFrag() {
+
+        inflateRegFragment();
     }
 }

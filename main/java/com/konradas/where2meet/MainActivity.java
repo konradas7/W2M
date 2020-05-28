@@ -1,8 +1,9 @@
 package com.konradas.where2meet;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
@@ -10,26 +11,27 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.libraries.places.api.model.OpeningHours;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.konradas.where2meet.Fragments.AddFriendDialogFragment;
+import com.konradas.where2meet.Fragments.ChangePasswordFragment;
 import com.konradas.where2meet.Fragments.FaqPanelFragment;
 import com.konradas.where2meet.Fragments.FriendPanelFragment;
 import com.konradas.where2meet.Fragments.GroupPanelFragment;
+import com.konradas.where2meet.Fragments.PlaceInfoFragment;
 import com.konradas.where2meet.Fragments.PreferencePanelFragment;
 import com.konradas.where2meet.Fragments.MapFragment;
 import com.konradas.where2meet.Fragments.MenuFragment;
 import com.konradas.where2meet.Fragments.ProfilePanelFragment;
+import com.konradas.where2meet.Fragments.SelectedPlaceFragment;
 import com.konradas.where2meet.Fragments.Views.FriendDialogContract;
 import com.konradas.where2meet.Fragments.Views.MenuContract;
 import com.konradas.where2meet.obj.Filter;
 import com.konradas.where2meet.obj.Group;
 import com.konradas.where2meet.obj.Location;
+import com.konradas.where2meet.obj.Place;
 import com.konradas.where2meet.obj.User;
 import com.konradas.where2meet.tools.DataInterface;
 import com.konradas.where2meet.tools.HTTPInterpreter;
@@ -44,26 +46,25 @@ public class MainActivity extends FragmentActivity implements MenuContract, OnMa
     User me;
     Filter filter;
     HTTPInterpreter httpInterpreter= new HTTPInterpreter();
+    List<Place> placeList= new ArrayList<>();
     boolean testParameters= true;
     private MapFragment mapFragment;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         final FragmentManager fragmentManager= getSupportFragmentManager();
         FloatingActionButton fab= findViewById(R.id.floatingActionButton);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showMenuDialog();
-            }
-        });
+        fab.setOnClickListener(v -> showMenuDialog());
         mapFragment = new MapFragment();
         if (savedInstanceState == null) {
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.add(R.id.map_frame, mapFragment).commit();
         }
         if (testParameters) setUpTestParameters();
+        mapFragment.setDataInterface(this);
         mapFragment.getMapAsync(this);
     }
 
@@ -180,7 +181,7 @@ public class MainActivity extends FragmentActivity implements MenuContract, OnMa
     @Override
     public void clearCurrentGroup() {
         if (testParameters) {
-            group= new Group(-1, new ArrayList<User>(), new Location(0,0));
+            group= new Group(-1, new ArrayList<>(), new Location(0,0));
             group.addUserToList(me);
         }
             else httpInterpreter.clearCurrentGroup();
@@ -258,16 +259,16 @@ public class MainActivity extends FragmentActivity implements MenuContract, OnMa
         FragmentTransaction ft = fragmentManager.beginTransaction();
         Fragment dial= fragmentManager.findFragmentByTag("friends");
         if (dial != null) {
-            Log.d("DEBUG", "Turetu nuimti dialoga");
             ft.remove(dial).commit();
         }
+
     }
 
     private void displayGroupOnMap() {
         for (User u: group.getUserList()) {
             mapFragment.displayUserMarker(u);
         }
-        mapFragment.displayMedianLocation(group.getMedianLoc());
+        mapFragment.displayMedianLocation(group.getMedianLoc(), filter);
     }
 
     @Override
@@ -302,6 +303,9 @@ public class MainActivity extends FragmentActivity implements MenuContract, OnMa
     @Override
     public void logoff() {
         //TODO: log off stuff here
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
     }
 
     @Override
@@ -310,11 +314,77 @@ public class MainActivity extends FragmentActivity implements MenuContract, OnMa
         return group.getMedianLoc();
     }
 
+
+    @Override
+    public void addPlaceToList(String s, String name, String address, OpeningHours openingHours) {
+        Place temp= new Place();
+        temp.id= s;
+        temp.name= name;
+        temp.address= address;
+        temp.hours= openingHours;
+        placeList.add(temp);
+    }
+
+
+    @Override
+    public void displayPlaceInfoFromList(Object tag) {
+        Log.d("DEBUG", tag.toString());
+        for (Place p : placeList) {
+            if (p.id == tag.toString()) {
+                PlaceInfoFragment infoFragment= new PlaceInfoFragment(p.id, p.name, p.address, p.hours);
+                final FragmentManager fragmentManager= getSupportFragmentManager();
+                FragmentTransaction ft = fragmentManager.beginTransaction();
+                infoFragment.show(ft, "place_info");
+                infoFragment.setDataInterface(this);
+            }
+        }
+    }
+
+    @Override
+    public void voteForPlace(String id) {
+        if (!testParameters) httpInterpreter.voteForPlace(id);
+        else {
+            mapFragment.removeAllMarkers();
+            String name= "";
+            String address= "";
+            for (Place p : placeList) {
+                if (p.id == id) {
+                    name= p.name;
+                    address= p.address;
+                }
+            }
+            SelectedPlaceFragment f= new SelectedPlaceFragment(name, address);
+            final FragmentManager fragmentManager= getSupportFragmentManager();
+            FragmentTransaction ft = fragmentManager.beginTransaction();
+            f.show(ft, "vote_place_info");
+
+        }
+    }
+
+    @Override
+    public void openBrowserWithSearch(String name, String address) {
+        name= name.replace(' ', '+');
+        address= address.replace(' ', '+');
+        Uri uri = Uri.parse("http://www.google.com/#q=" + name + "+" + address);
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        startActivity(intent);
+    }
+
+    @Override
+    public void openChangePasswordDialog() {
+        ChangePasswordFragment f= new ChangePasswordFragment();
+        final FragmentManager fragmentManager= getSupportFragmentManager();
+        FragmentTransaction ft = fragmentManager.beginTransaction();
+        f.show(ft, "password_change");
+
+    }
+
     private void setUpTestParameters() {
         httpInterpreter.setPw("test");
-        group= new Group(-1, new ArrayList<User>(), new Location(0,0));
-        me= new User(-1, "Testuotojas", new Location (54.711076, 25.293038));
+        group= new Group(-1, new ArrayList<>(), new Location(0,0));
+        me= new User(-1, "Konradas", new Location (54.709714, 25.296474));
         group.addUserToList(me);
         filter= new Filter();
     }
+
 }

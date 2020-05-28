@@ -5,26 +5,26 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="@dimen/padding">
 
-        <ScrollView
+        <TextView
+            android:id="@+id/textView4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/padding">
+            android:text="Susitikimo vieta:" />
 
-            <LinearLayout
-                android:id="@+id/groupmember_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" />
-        </ScrollView>
+        <TextView
+            android:id="@+id/vote_selected_place_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
 
         <Button
-            android:id="@+id/leavegroup_button"
+            android:id="@+id/navigate_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Išeiti iš grupės" />
+            android:text="Naviguoti į vietą" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

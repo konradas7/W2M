@@ -37,12 +37,15 @@ public class ProfilePanelFragment extends DialogFragment implements ProfilePanel
         presenter.setDataInterface(di);
         presenter.getProfileInformation();
         Button logoff = view.findViewById(R.id.logoff_button);
-        logoff.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //TODO: atsijungti ir i6jungti activity
-                di.logoff();
-            }
+        Button changepw = view.findViewById(R.id.change_password_button);
+        logoff.setOnClickListener(v -> {
+            //TODO: atsijungti ir i6jungti activity
+            di.logoff();
+            dismiss();
+        });
+        changepw.setOnClickListener(v -> {
+            di.openChangePasswordDialog();
+            dismiss();
         });
         return view;
     }

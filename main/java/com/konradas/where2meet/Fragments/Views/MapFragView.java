@@ -1,19 +1,24 @@
 package com.konradas.where2meet.Fragments.Views;
 
-import android.os.Bundle;
+import android.content.Context;
 
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
 
 public interface MapFragView {
-    void onCreate(Bundle savedInstanceState);
 
-    void onResume();
 
     void getMapAsync(OnMapReadyCallback onMapReadyCallback);
 
-    void onPause();
 
     void onDestroy();
 
-    void onLowMemory();
+
+    Context getActivityContext();
+
+    void showNoPlacesFoundError();
+
+    void setPlaceMarker(String s, String name, LatLng latLng);
+
+    void noPlaceInfoError();
 }

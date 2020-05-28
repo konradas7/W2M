@@ -16,7 +16,6 @@ import com.konradas.where2meet.R;
 
 public class FaqPanelFragment extends DialogFragment implements FaqPanelView {
 
-  //  RegisterPresenter presenter;
     public static FaqPanelFragment newInstance() {
       FaqPanelFragment f = new FaqPanelFragment();
       Bundle args = new Bundle();
@@ -25,13 +24,12 @@ public class FaqPanelFragment extends DialogFragment implements FaqPanelView {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view= inflater.inflate(R.layout.faq_fragment, container, false);
-     //   presenter.attach(this);
+
         return view;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-     //   presenter.detach();
     }
 }
